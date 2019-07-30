@@ -50,6 +50,7 @@ coverage.xml
 #MYFILE
 pytest.txt
 raport.xlsx
+out/
 
 # Translations
 *.mo

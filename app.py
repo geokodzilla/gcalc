@@ -19,15 +19,22 @@ class App:
         self.out_path = os.path.join(os.getcwd(), 'out')
         if not os.path.exists(self.out_path):
             os.mkdir(self.out_path)
-        filename = datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + '.txt'
-        self.file_path = os.path.join(self.out_path, filename)
-        with open(self.file_path, 'w') as outfile:
-            outfile.close()
+        self.filename = datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + '.txt'
+        self.file_path = os.path.join(self.out_path, self.filename)
+        
         self.status_bar = StatusBar(self.root)
         self.map_canvas = Map(self.root, self.status_bar, self.file_path)
         self.make_widgets()
         self.last_searched = []
         self.root.iconbitmap('./img/gcalc.ico')
+        
+    def txt_report(self):
+        with open(self.file_path, 'w') as outfile:
+            for line in self.map_canvas.obliczone:
+                wline = ' '.join(line) + '\n'
+                outfile.writelines(wline)
+            outfile.close()
+        showinfo('INFO', 'Zapisano raport %s' % self.filename)
         
     def make_widgets(self):
         
@@ -35,6 +42,7 @@ class App:
         menu_obiekty = tk.Menu(menu, tearoff=0)
         menu_etykiety = tk.Menu(menu, tearoff=0)
         menu.add_command(label="Import txt", command=self.map_canvas.import_map)
+        menu.add_command(label="Raport txt", command=self.txt_report)
         submenu_liniowe = tk.Menu(menu)
         submenu_liniowe.add_command(label="Linia Bazowa [LB]", command=self.map_canvas.linia_bazowa)
         submenu_liniowe.add_command(label="Miary ortogonalne [MO]", command=self.map_canvas.ortog)

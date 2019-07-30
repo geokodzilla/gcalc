@@ -17,8 +17,7 @@ class Point(object):
         self.id = id # unikatowy identyfikator obiektu na mapie
 
     def __str__(self):
-        return "{} {} {} {}".format(self.number, str(self.x), str(self.y),
-                                    str(self.d))
+        return "{} {} {}".format(self.number, str(self.x), str(self.y))
 
     def save(self):
         return "{} {} {} {}\n".format(self.number, str(round(self.x, 2)),

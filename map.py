@@ -10,7 +10,7 @@ from dialog import WDialog
 class Map(tk.Canvas):
 
     """
-    
+    Klasa będąca reprezentacją mapy dziedzicząca z bazowej klasy canvas
     """
    
 
@@ -38,10 +38,16 @@ class Map(tk.Canvas):
         
         
     def clear_point(self, id):
+        """
+        Przywracanie konfiguracji bazowej punktu
+        """
         if id is not None:
           self.itemconfigure(id, fill='black')
   
     def clear(self):
+        """
+        Anulowanie aktualnie realizowanej akcji
+        """
         self.clear_point(self.start_point.id)
         self.clear_point(self.end_point.id)
         self.start_point = None
@@ -54,6 +60,11 @@ class Map(tk.Canvas):
         
         
     def grab_start_point_number(self, event):
+        """
+        Metoda umożliwia wskazanie początku linii bazowej
+        Jedna linia bazowa umożliwa obliczenie miar ortogonalnych
+        Wskazanie dwóch po kolei umożliwia wyznaczenie ich przecięcia
+        """
         self.clear_point(self.start_point)
         x = self.canvasx(event.x)
         y = self.canvasy(event.y)
@@ -66,6 +77,9 @@ class Map(tk.Canvas):
         
         
     def grab_end_point_number(self, event):
+        """
+        Metoda umożliwia wskazanie końca linii bazowej
+        """
         self.clear_point(self.end_point)
         x = self.canvasx(event.x)
         y = self.canvasy(event.y)
@@ -79,19 +93,31 @@ class Map(tk.Canvas):
         self.sb.clear()
               
     def to_canvas_coordinates(self, px, py):
+        """
+        metoda konwertuje współrzędne geodezyjne na współrzędne obiektu canvas
+        """
         return px*self.ratio + self.offset[0], -py*self.ratio + self.offset[1]
 
     def to_geographical_coordinates(self, x, y):
+        """
+        metoda konwertuje współrzędne obiektu canvas na współrzędne geodezyjne
+        """
         px, py = (x - self.offset[0])/self.ratio, (self.offset[1] - y)/self.ratio
         return px, py
 
     def import_map(self):
+        """
+        Metoda wczytująca dane z pliku
+        """
         self.delete('all')
         self.filepath = filedialog.askopenfilename(title='Import txt')
         self.draw_map()
         self.sb.set('Wczytano plik %s' % self.filepath)
     
     def draw_map(self):
+        """
+        Metoda odpowiedzialna za rysowanie wczytywanych punktów
+        """
         pt = [i.strip().split() for i in open(self.filepath)]
         for p in pt:
             number, x, y = p
@@ -105,6 +131,9 @@ class Map(tk.Canvas):
         self.configure(scrollregion=self.bbox('all'))
          
     def linia_bazowa(self):
+        """
+        Metoda inicjująca wskazywanie linii bazowej
+        """
         if self.start_point is not None and self.end_point is not None:
             self.clear_point(self.start_point.id)
             self.clear_point(self.end_point.id)
@@ -114,6 +143,10 @@ class Map(tk.Canvas):
         self.sb.set('Wskaż początek linii pomiarowej')
         
     def ortog(self):
+        """
+        Metoda do obliczania miar ortogonalnych na podstawie elementów wskazanych przez
+        użytkownika na mapie
+        """
         self.lines = []
         if self.start_point is not None and self.end_point is not None:
             d = WDialog(self, title='Wprowadź dane', counter=self.point_number)
@@ -127,7 +160,7 @@ class Map(tk.Canvas):
                 self.last_circle_id = self.create_oval(self.to_canvas_coordinates(nowy.y, nowy.x), self.to_canvas_coordinates(nowy.y, nowy.x), stat=tk.DISABLED)
                 nowy.set_id(t)
                 self.points[t] = nowy
-                self.obliczone.append((sp, ep, nowy))
+                self.obliczone.append(['MO', str(sp), str(ep), str(nowy), str(odcieta), str(rzedna)])
                 self.point_number = num + 1
             else:
                 self.clear_point(self.start_point.id)
@@ -137,6 +170,10 @@ class Map(tk.Canvas):
                 self.bind("<Button-1>", self.grab_start_point_number)
     
     def przeciecie_prostych(self):
+        """
+        Metoda do obliczania przecięcia prostych na podstawie elementów
+        wskazanych przez użytkownika
+        """
         if len(self.lines) == 2:
             sp1, ep1 = self.lines[0]
             sp2, ep2 = self.lines[1]
@@ -147,7 +184,7 @@ class Map(tk.Canvas):
             self.last_circle_id = self.create_oval(self.to_canvas_coordinates(nowy.y, nowy.x), self.to_canvas_coordinates(nowy.y, nowy.x), stat=tk.DISABLED)
             nowy.set_id(t)
             self.points[t] = nowy
-            self.obliczone.append((sp1, ep1, sp2, ep2, nowy))
+            self.obliczone.append(['PP', str(sp1), str(ep1), str(sp2), str(ep2), str(nowy)])
             self.point_number = num + 1
             self.lines = []
         else:
@@ -155,6 +192,9 @@ class Map(tk.Canvas):
                 
                    
     def zoomer(self, event, factor=None):
+        """
+        Metoda obsługująca powiększanie i pomniejszanie zakresu mapy
+        """
         if not factor:
             factor = 1.2 if event.delta > 0 else 0.8
         event.x, event.y = self.canvasx(event.x), self.canvasy(event.y)

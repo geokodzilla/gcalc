@@ -2,10 +2,19 @@
 import math as m
 from point import Point
 
+
+
+
 def roznice(d, delta, odl):
+    """
+    funkcja obliczająca delte dla miar ortogonalnych
+    """
     return d * (delta/odl)
     
 def domiary(numer, sp, ep, odcieta, rzedna):
+    """
+    funkcja obliczająca punkt z miar ortogonalnych
+    """
     sp.dist(ep)
     
     dxa = roznice(odcieta, (ep.x-sp.x), sp.d)
@@ -23,6 +32,9 @@ def domiary(numer, sp, ep, odcieta, rzedna):
     return Point(str(numer), round(xN, 2), round(yN, 2))
 
 def przeciecie(numer, sp, ep, sp2, ep2):
+    """
+    funckja obliczająca punkt stanowiący przecięcie dwóch prostych
+    """
     l = (ep.y - sp.y)/(ep.x - sp.x)
     m = (ep2.y - sp2.y)/(ep2.x - sp2.x)
     

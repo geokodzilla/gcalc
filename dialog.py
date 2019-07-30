@@ -4,6 +4,12 @@ from tkinter import *
 
 
 class WDialog(Toplevel):
+    
+    """
+    Klasa okna do obliczeń miar ortogonalnych, użytkownik może podać numer punktu
+    oraz odciętą i rzędną do punktu
+    """
+    
 
     def __init__(self, parent, title = None, counter=1):
 
