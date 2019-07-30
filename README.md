@@ -1,4 +1,4 @@
-# gcalc
+# ![LOGO](img/gcalc.ico)gcalc
 
 Program umożliwia wykonywanie podstawowych obliczeń geodezyjnych w sposób graficzny.
 
