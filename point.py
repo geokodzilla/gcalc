@@ -38,5 +38,8 @@ class Point(object):
         Metoda ustawiająca identyfikator obiektu
         """
         self.id = id
+        
+    def change_number(self, new_number):
+        self.number = new_number
 
         

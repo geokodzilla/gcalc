@@ -15,7 +15,7 @@ Program nie korzysta z żadnych zewntrznych bibliotek, interfejs graficzny preze
 
 ### Pierwsze kroki
 
-Aby rozpocząć porównywanie plików należy uruchomić program
+Aby rozpocząć obliczanie punktów należy uruchomić program
 
 ```
 python app.py
@@ -59,7 +59,7 @@ Poniżej lista rzeczy które powinny zostać dodane w najbliższym czasie
 - [ ] konwersja prostych raportów do lepszej wizualnie postaci
 - [ ] dodatkowe moduły obliczeń (wcięcia)
 - [ ] czasowe wyświetlanie komunikatów na pasku status
-- [ ] możliwość zmiany numeru punktu
+- [x] możliwość zmiany numeru punktu
 
 
 

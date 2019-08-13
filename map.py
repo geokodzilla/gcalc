@@ -6,6 +6,8 @@ import math as m
 from point import Point
 from calc import domiary, przeciecie
 from dialog import WDialog
+from update_point_dialog import UpdatePointDialog
+
 
 class Map(tk.Canvas):
 
@@ -142,6 +144,39 @@ class Map(tk.Canvas):
         self.sb.clear()
         self.sb.set('Wskaż początek linii pomiarowej')
         
+        
+    def update_point_shortcut(self):
+        self.bind("<Button-1>", self.update_point)
+        self.sb.clear()
+        self.sb.set('Wskaż punkt - zmiana numeru')
+        
+    def update_point(self, event):
+        x = self.canvasx(event.x)
+        y = self.canvasy(event.y)
+        items = self.find_closest(x, y)
+        point = self.points[items[0]]
+        tags = self.gettags(items[0])
+        fill = self.itemcget(items[0], 'fill')
+        d = UpdatePointDialog(self, title='Nowy numer')
+        if d.result is not None:
+          new_number = d.result
+          self.delete(items[0])
+          del self.points[items[0]]
+          point.change_number(new_number)
+          t = self.create_text(self.to_canvas_coordinates(point.y, point.x), text=point.number, tags=tags, anchor=tk.NW, fill=fill)
+          point.set_id(t)
+          self.points[t] = point
+          self.obliczone_update(items[0], point)
+          
+          
+    def obliczone_update(self, id, new_point):
+        if len(self.obliczone) > 0:
+            for nr, row in enumerate(self.obliczone):
+                for index, k in enumerate(row[1]):
+                    if id == k:
+                        self.obliczone[nr][0][index+1] = str(new_point)
+                        self.obliczone[nr][1][index] = new_point.id
+          
     def ortog(self):
         """
         Metoda do obliczania miar ortogonalnych na podstawie elementów wskazanych przez
@@ -160,7 +195,7 @@ class Map(tk.Canvas):
                 self.last_circle_id = self.create_oval(self.to_canvas_coordinates(nowy.y, nowy.x), self.to_canvas_coordinates(nowy.y, nowy.x), stat=tk.DISABLED)
                 nowy.set_id(t)
                 self.points[t] = nowy
-                self.obliczone.append(['MO', str(sp), str(ep), str(nowy), str(odcieta), str(rzedna)])
+                self.obliczone.append((['MO', str(sp), str(ep), str(nowy), str(odcieta), str(rzedna)], [sp.id, ep.id, nowy.id]))
                 self.point_number = num + 1
             else:
                 self.clear_point(self.start_point.id)
@@ -184,7 +219,7 @@ class Map(tk.Canvas):
             self.last_circle_id = self.create_oval(self.to_canvas_coordinates(nowy.y, nowy.x), self.to_canvas_coordinates(nowy.y, nowy.x), stat=tk.DISABLED)
             nowy.set_id(t)
             self.points[t] = nowy
-            self.obliczone.append(['PP', str(sp1), str(ep1), str(sp2), str(ep2), str(nowy)])
+            self.obliczone.append((['PP', str(sp1), str(ep1), str(sp2), str(ep2), str(nowy)], [sp1.id, ep1.id, sp2.id, ep2.id, nowy.id]))
             self.point_number = num + 1
             self.lines = []
         else:

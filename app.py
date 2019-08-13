@@ -30,8 +30,8 @@ class App:
         
     def txt_report(self):
         with open(self.file_path, 'w') as outfile:
-            for line in self.map_canvas.obliczone:
-                wline = ' '.join(line) + '\n'
+            for row in self.map_canvas.obliczone:
+                wline = ' '.join(row[0]) + '\n'
                 outfile.writelines(wline)
             outfile.close()
         showinfo('INFO', 'Zapisano raport %s' % self.filename)
@@ -69,6 +69,9 @@ class App:
         ClearButton = tk.Button(self.toolbar, text='Anuluj', relief=tk.FLAT,
             command=self.map_canvas.clear)
         ClearButton.pack(side=tk.LEFT, padx=2, pady=2)
+        UpdateButton = tk.Button(self.toolbar, text='PktNum', relief=tk.FLAT,
+            command=self.map_canvas.update_point_shortcut)
+        UpdateButton.pack(side=tk.LEFT, padx=2, pady=2)
         self.toolbar.pack(side=tk.TOP, fill=tk.X)
         self.root.config(menu=menu)
         self.map_canvas.pack(fill='both', expand=1)
